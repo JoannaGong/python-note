@@ -23,7 +23,7 @@
 * 截取元素（有下限没有上限）：字符串\[start:end\]
 * 步长截取（按照步长减一进行）：字符串\[start:end：num\]
   print("abcdefghijk"\[1:8:2\]) => bdfh
-* 默认取法：字符串\[start:end:step\]
+* 默认取法：字符串\[start\:end\:step\]
   这三个参数都有默认值，start:0, end: 结尾， step：1，可以取到字符串最后一位
   print("abcdefghijk"\[:5\])  => abcde
   print("abcdefghijk"\[3:\])  => defghijk
