@@ -203,4 +203,174 @@ print(x)
 print(y)
 print(z)
 ```
+## lambda 匿名函数
+
+```python
+a = lambda a, b, c, d: a+b+c+d
+print(a(1, 2, 3, 4))
+b = [lambda a: a*2, lambda b: b*5]
+print(b[0](3))
+```
+
+## eval() 函数
+
+将字符串当成有效的表达式来求值，并返回求值结果
+
+## nonlocal 关键字
+
+* nonlocal 用来声明外层的局部变量
+* global 用来声明全局变量
+
+## LEGB 规则
+
+python 在查找‘名称’时，是按照 LEGB 规则查找的
+local => enclosed => global => built in
+
+* local 指的是函数或者类的方法内部
+* enclosed 指的是嵌套函数（一个函数包裹另一个函数，闭包）
+* global 指的是模块中的全局变量
+* built in 指的是 python 为自己保留的特殊名称
+
+## 类
+
+* __init__() 方法：初始化创建好的对象，给实例属性赋值
+* __new__() 方法：用于创建对象，但我们一般无需重新定义该方法
+* __del__() 析构方法
+* __call__()方法：可调用的对象，对象可以像函数一样被调用
+
+## 方法没有重载
+python 中是没有方法的重载的，定义一个方法即可有多种调用方式，相当于实现了其他语言中的方法的重载；
+如果我们在类体中定义了多个重名的方法，只有最后一个方法有效
+
+## 工厂模式
+```python
+class CarFactory:
+    def create_car(self, brand):
+        if brand == 'Benz':
+            return Benz()
+        elif brand == 'BMW':
+            return BMW()
+        elif brand == 'Audi':
+            return Audi()
+        else:
+            print('无法生产该车型')
+
+class Benz:
+    print('Benz')
+
+class BMW:
+    print('BMW')
+
+class Audi:
+    print('Audi')
+
+factory = CarFactory()
+car1 = factory.create_car('Benz')
+car2 = factory.create_car('Ford')
+```
+
+## 单例模式
+
+```python
+class MySingleton:
+    __obj = None
+    __init_flag = True
+
+    def __new__(cls, *args, **kwargs):
+        if cls.__obj == None:
+            cls.__obj = object.__new__(cls)
+
+        return cls.__obj
+
+    def __init__(self, name):
+        if MySingleton.__init_flag:
+            print('init')
+            self.name = name
+            MySingleton.__init_flag = False
+
+a = MySingleton('aa')
+b = MySingleton('bb')
+print(a)
+print(b)
+```
+
+## 文件操作
+
+```python
+f = open(r"b.txt", "w", encoding='utf-8')
+f.write('星期天')
+f.close()
+```
+
+```python
+with open(r'b.txt', 'r', encoding='utf-8') as f:
+    print(f.read())
+```
+
+```python
+# 每次读取一行
+with open(r'b.txt', 'r', encoding='utf-8') as f:
+    for x in f:
+        print(x, end="")
+```
+
+## try except 基本结构
+
+try...except...else 结构增加了’else 块。如果try块中没有抛出异常，则执行else块
+如果try 块中抛出异常，则执行except 块，不执行 else 块。
+try...except...finally 结构中，finally 块无论是否发生异常，都会被执行；
+通常用来释放try块中申请的资源
+
+```python
+try:
+    #被监控的可能引发异常的语句块
+except BaseException as e:
+    #异常处理语句块
+else:
+    pass
+finally:
+    pass
+```
+
+## try 多个 except 结构
+
+按照先子类后父类的顺序
+
+```python
+try:
+    #被监控的可能引发异常的语句块
+except Exception1:
+    #处理 Exception1 的语句块
+except Exception2:
+    #处理 Exception2 的语句块
+except BaseException as e:
+    #处理可能遗漏的异常的语句块
+```
+
+## 常见异常的解决
+
+* 一般不要将 return 语句放到 try，except，else，finally 块中，会发生一些意想不到的错误。
+建议放到方法最后
+* SyntaxError 语法错误
+int a = 3
+* NameError 尝试访问一个没有申明的变量
+print(a)
+* ZeroDivisionError 除数为 0 的错误（零除错误）
+* ValueError 数值错误
+float('abc')
+* TypeError 类型错误
+123 + 'abc'
+* AttributeError 访问对象的不存在的属性
+* IndexError 索引越界异常
+* KeyError 字典的关键字不存在
+
+## 常见异常汇总
+
+| 异常名称 | 说明 |
+| :......: | :...... |
+| ArithmeticError | 所有数值计算错误的基类 |
+
+
+
+
 
