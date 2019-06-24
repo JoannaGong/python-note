@@ -374,3 +374,406 @@ float('abc')
 
 
 
+
+
+
+
+
+
+
+
+
+
+# object 根类
+
+object 类是所有类的父类，因此所有的类都有 object 类的属性和方法。
+
+## mro()方法
+
+通过类的方法 mro() 或者类的属性__mro__，可以输出这个类的继承层次活动
+
+```python
+class A:
+    pass
+class B(A):
+    pass
+class C(B):
+    pass
+print(C.mro())
+```
+
+## dir() 查看对象属性
+
+## __str__() 方法
+
+用于返回一个对于“对象的描述”，对应于内置函数str()，经常用于print()方法，帮助我们查看对象的信息
+
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return "名字是：{0}".format(self.name)
+
+p = Person("Lilei")
+print(p)
+```
+
+## super() 获得父类定义
+
+在子类中，如果想要获得父类的方法时，我们可以通过super()来做。
+super()代表父类的定义，不是父类对象。
+
+```python
+class A:
+    def say(self):
+        print("A:", self)
+
+class B(A):
+    def say(self):
+        # A.say(self)
+        super().say()
+        print("B:", self)
+
+B().say()
+```
+
+## isinstance() 函数
+
+用来判断一个对象是否是一个已知的类型
+isinstance(object, classinfo)
+
+
+# 多态
+
+多态是指同一个方法调用由于对象不同可能会产生不同的行为。
+
+* 多态是方法的多态，属性没有多态
+* 多态的存在是有2个必要条件：继承、方法重写
+
+```python
+class Man:
+    def eat(self):
+        print('hungry')
+
+class Chinese(Man):
+    def eat(self):
+        print('Chinese eat with chopsticks')
+
+class English(Man):
+    def eat(self):
+        print('English eat with fork')
+
+class Indian(Man):
+    def eat(self):
+        print('Indian eat with their hands')
+
+def eat_method(m):
+    if isinstance(m, Man):
+        m.eat()     # 多态，一个方法调用，根据对象不同、调用不同的方法
+    else:
+        print("cannot eat")
+
+eat_method(Chinese())
+eat_method(English())
+eat_method(Indian())
+```
+
+# GUI
+
+## 面向对象GUI经典基本程序
+
+```python
+from tkinter import *
+
+
+class Application(Frame):
+
+    def __init__(self, master=None):
+        # super() 代表的是父类的定义，而不是父类对象
+
+        super().__init__(master)
+        self.master = master
+        self.pack()
+
+        self.create_widget()
+
+    def create_widget(self):
+        pass
+
+
+if __name__ == '__main__':
+    root = Tk()
+    root.title("GUI经典程序")
+    root.geometry("500x300+200+200")
+    app = Application(master=root)
+    root.mainloop()
+```
+
+```python
+from tkinter import *
+
+
+class Application(Frame):
+
+    def __init__(self, master=None):
+        # super() 代表的是父类的定义，而不是父类对象
+
+        super().__init__(master)
+        self.master = master
+        self.pack()
+
+        self.create_widget()
+
+    def create_widget(self):
+        self.label01 = Label(self, text="GUI Label1", width=10, height=2, bg="black", fg="white")
+        self.label01.pack()
+
+        self.label02 = Label(self, text="GUI Label2", width=10, height=2, bg="pink", fg="white",
+                             font=("黑体", 20))
+        self.label02.pack()
+
+        # 显示图像
+        global photo
+        photo = PhotoImage(file="images/1.gif")
+        self.label03 = Label(self, image=photo)
+        self.label03.pack()
+
+        # 显示多行文本
+        self.label04 = Label(self, text="beauty1\nbeauty2\nbeauty3", borderwidth=5, relief="groove", justify="right")
+        self.label04.pack()
+
+
+
+if __name__ == '__main__':
+    root = Tk()
+    root.title("GUI经典程序")
+    root.geometry("800x800+200+200")
+    app = Application(master=root)
+    root.mainloop()
+```
+
+
+## options 选项
+
+* 创建对象时，使用命名参数（即关键字参数）
+fred = Button(self, fg="red", bg="blue")
+
+* 创建对象后，使用字典索引方式
+fred["fg"] = "red"
+fred["bg"] = "blue"
+
+* 创建对象后，使用 config() 方法
+fred.config(fg="red", bg="blue")
+
+
+## 可变参数
+
+可变数量的参数
+
+* *param(一个星号)：将多个参数收集到一个“元组”对象中
+
+* **param(两个星号)：将多个参数收集到一个“字典”对象中
+
+```python
+def f1(a, b, **c):
+    print(a, b, c)
+
+f1(8, 9, name="leo", age=18)
+```
+
+## canvas 画图
+
+```python
+from tkinter import *
+from tkinter import messagebox
+import random
+
+class Application(Frame):
+
+    def __init__(self, master=None):
+        # super() 代表的是父类的定义，而不是父类对象
+
+        super().__init__(master)
+        self.master = master
+        self.pack()
+
+        self.create_widget()
+
+    def create_widget(self):
+        self.canvas = Canvas(self, width=300, height=200, bg="pink")
+        self.canvas.pack()
+
+        # 画一条直线
+        line = self.canvas.create_line(10, 10, 30, 20, 40, 50)
+
+        # 画一个矩形
+        rect = self.canvas.create_rectangle(50, 50, 100, 100)
+
+        # 画一个椭圆
+        oval = self.canvas.create_oval(50, 50, 100, 100)
+
+
+        global photo
+        photo = PhotoImage(file="images/1.gif")
+        self.canvas.create_image(150, 170, image=photo)
+
+        Button(self, text="画10个矩形", bg="blue", command=self.draw50Recg).pack(side="left")
+
+    def draw50Recg(self):
+        for x in range(0, 10):
+            x1 = random.randrange(int(self.canvas["width"])/2)
+            y1 = random.randrange(int(self.canvas["height"])/2)
+            x2 = x1 + random.randrange(int(self.canvas["width"])/2)
+            y2 = y1 + random.randrange(int(self.canvas["height"])/2)
+            self.canvas.create_rectangle(x1, y1, x2, y2)
+
+
+if __name__ == '__main__':
+    root = Tk()
+    root.title("GUI经典程序")
+    root.geometry("600x600+200+200")
+    app = Application(master=root)
+    root.mainloop()
+
+```
+
+# 布局管理器
+
+三种管理器：pack  grid place
+
+## grid 布局管理器
+
+| 选项 | 说明 | 取值范围 |
+|:------: | :------ | :------ |
+| column | 单元格的列号 | 从0开始的正整数 |
+| columnspan | 跨列，跨越的列数 | 正整数 |
+| row | 单元格的行号 | 从0开始的正整数 |
+| rowspan | 跨行，跨越的行数 | 正整数 |
+| ipadx, ipady | 设置子组件之间的间隔，x方向或者y方向，默认单位为像素 | 非负浮点数，默认0.0 |
+| padx, pady | 与之并列的组件之间的间隔，x方向或者y方向，默认单位为像素 | 非负浮点数，默认0.0 |
+| sticky | 组件紧贴所在单元格的某一角，对应于东南西北中以及4个角 | n,s,w,e,nw,sw,se,nt,center(默认) |
+
+```python
+from tkinter import *
+
+class Application(Frame):
+
+    def __init__(self, master=None):
+        # super() 代表的是父类的定义，而不是父类对象
+
+        super().__init__(master)
+        self.master = master
+        self.pack()
+
+        self.create_widget()
+
+    def create_widget(self):
+        self.label01= Label(self, text="user")
+        self.label01.grid(row=0, column=0)
+        self.entry01 = Entry(self)
+        self.entry01.grid(row=0, column=1)
+        Label(self, text="user=tellphone").grid(row=0, column=2)
+
+        Label(self, text="password").grid(row=1, column=0)
+        Entry(self, show="*").grid(row=1, column=1)
+
+        Button(self, text="login").grid(row=2, column=1, sticky=EW)
+        Button(self, text="cancel").grid(row=2, column=2, sticky=E)
+
+
+if __name__ == '__main__':
+    root = Tk()
+    root.title("GUI经典程序")
+    root.geometry("500x300+200+200")
+    app = Application(master=root)
+    root.mainloop()
+```
+
+## 通过 grid 布局，实现计算器软件界面
+
+```python
+from tkinter import *
+
+class Application(Frame):
+
+    def __init__(self, master=None):
+        # super() 代表的是父类的定义，而不是父类对象
+
+        super().__init__(master)
+        self.master = master
+        self.pack()
+
+        self.create_widget()
+
+    def create_widget(self):
+        btnText = (("MC", "M+", "M-", "MR"),
+                   ("C", "+", "/", "x"),
+                   (7, 8, 9, "-"),
+                   (4, 5, 6, "+"),
+                   (1, 2, 3, "="),
+                   (0, "."))
+        Entry(self).grid(row=0, column=0, columnspan=4)
+
+        for rindex,r in enumerate(btnText):
+            for cindex,c in enumerate(r):
+                if c == "=":
+                    Button(self, text=c, width=2).grid(row=rindex+1, column=cindex, rowspan=2, sticky=NSEW)
+                elif c == 0:
+                    Button(self, text=c, width=2).grid(row=rindex+1, column=cindex, columnspan=2, sticky=NSEW)
+                elif c == ".":
+                    Button(self, text=c, width=2).grid(row=rindex+1, column=cindex+1, rowspan=2, sticky=EW)
+                else:
+                    Button(self, text=c, width=2).grid(row=rindex+1, column=cindex, sticky=EW)
+
+
+if __name__ == '__main__':
+    root = Tk()
+    root.title("GUI经典程序")
+    root.geometry("500x300+200+200")
+    app = Application(master=root)
+    root.mainloop()
+
+```
+
+## pack 布局管理器
+
+pack 适用于简单的垂直或水平排布，如果需要复杂的布局，可以使用 grid 或 place
+
+## pack 布局用法，制作钢琴按键布局
+
+```python
+from tkinter import *
+
+root = Tk()
+root.geometry("700x220")
+
+f1 = Frame(root)
+f1.pack()
+f2 = Frame(root)
+f2.pack()
+
+btnText = ("流行风", "中国风", "日本风", "重金属", "轻音乐")
+
+for txt in btnText:
+    Button(f1, text=txt).pack(side="left", padx="10")
+
+for i in range(1, 20):
+    Label(f2, width=5, height=10, borderwidth=1, relief="solid",
+          bg="black" if i % 2 == 0 else "white").pack(side="left", padx=2)
+
+root.mainloop()
+```
+
+
+
+
+
+
+
+
+
+
+
+
