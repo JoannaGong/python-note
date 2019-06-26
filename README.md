@@ -766,6 +766,196 @@ for i in range(1, 20):
 root.mainloop()
 ```
 
+# python 爬虫
+
+## robots.txt 口头协议
+
+taobao.com/robots.txt
+
+
+## 爬取步骤
+
+* 给一个url
+* 写程序，模拟浏览器访问url
+* 解析内容，提取数据
+
+## 涉及内容
+
+* 使用到的库
+urllib\requests\bs4
+
+* 解析网页内容的知识
+正则表达式，bs4,xpath,jsonpath
+
+* 涉及到动态html
+selenium + phantomjs, chromeheadless
+
+* scrapy 框架
+高性能框架使用
+
+* scrapy-redis 组件
+redis, 分布式爬虫
+
+* 涉及到爬虫 - 反爬虫 - 反反爬虫 的一些内容
+UA，代理，验证码，动态页面等
+
+
+## urllib 库
+
+模拟浏览器发送请求的库，python自带
+
+## urllib.request
+
+* urlopen() 发送请求
+* urlretrieve()
+
+## urllib.parse
+
+* quote    url编码函数，将中文转换为%xx
+* unquote     url解码函数，将%xx转换为指定字符
+* urlencode   将字典拼接，并实现了编码的功能
+
+```python
+import urllib.parse
+ret = urllib.parse.quote(image_url)
+re = urllib.parse.unquote(image_url)
+url = urllib.parse.urlencode(data)
+
+```
+
+## response
+
+* read()              读取相应内容，内容是字节类型
+* geturl()            读取请求的url
+* getheaders()        获取头部信息，列表里面有元组
+* getcode()           获取状态码
+* readlines()         按行读取，返回列表，都是字节类型
+
+```python
+import urllib.request
+
+url = "http://www.baidu.com"
+
+# 发送请求
+response = urllib.request.urlopen(url)
+
+# print(response.read().decode())
+
+# with open('baidu.html', 'w', encoding='utf8') as fp:
+#     fp.write(response.read().decode())
+
+# print(dict(response.getheaders()))
+
+print(response.geturl())
+
+image_url = "https://hbimg.huabanimg.com/91c55b6bd4e80d2e2d31f4889498072670397d5319e47-j0Y3Wp_fw658"
+
+response = urllib.request.urlopen(image_url)
+
+# 图片只能写入本地二进制的格式
+
+# with open('prince.jpg', 'wb') as fp:
+#     fp.write(response.read())
+
+urllib.request.urlretrieve(image_url, 'prince.jpg')
+```
+
+
+
+## 字符串与二进制字符串之间的转换
+
+* encode() 字符串 => 二进制
+如果小括号里不写参数，默认是utf8
+如果写，就写 gbk
+
+* decode()  二进制 => 字符串
+如果不写，默认utf8
+如果写，写 gbk
+
+
+## get 方式
+
+```python
+import urllib.request
+import urllib.parse
+
+keywords = input("请输入您想要搜索的内容")
+
+url = 'http://www.baidu.com/s'
+
+data = {
+    'wd': keywords,
+    'ie': 'uft-8'
+}
+
+query_string = urllib.parse.urlencode(data)
+
+url = url + '?' + query_string
+
+# 发送请求
+
+response = urllib.request.urlopen(url)
+file_name = keywords + ".html"
+
+with open(file_name, 'wb') as fp:
+    fp.write(response.read())
+```
+
+# 构建请求头部信息（反爬第一步）
+
+## 伪装自己的UA，让服务器认为你是浏览器上网
+
+构建请求对象： urllib.request.Request()
+
+```python
+import urllib.request
+import urllib.parse
+
+url = 'http://www.baidu.com/'
+
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
+}
+
+request = urllib.request.Request(url=url, headers=headers)
+
+response = urllib.request.urlopen(request)
+
+print(response.read().decode())
+```
+
+## post() 
+
+```python
+import urllib.request
+import urllib.parse
+
+post_url = "https://fanyi.baidu.com/sug"
+word = input('输入要翻译的英文单词：')
+
+form_data = {
+    'kw': word
+}
+
+headers = {
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
+}
+
+request = urllib.request.Request(url=post_url, headers=headers)
+form_data = urllib.parse.urlencode(form_data).encode()
+
+response = urllib.request.urlopen(request, data=form_data)
+
+print(response.read().decode())
+```
+
+
+
+
+
+
+
+
 
 
 
