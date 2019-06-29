@@ -369,8 +369,198 @@ float('abc')
 | 异常名称 | 说明 |
 | :------: | :------ |
 | ArithmeticError | 所有数值计算错误的基类 |
+| AssertionError | 断言语句失败 |
+| AttributeError | 对象没有这个属性 |
+| BaseException | 所有异常的基类 |
+| DeprecationWarning | 关于被弃用的特征的警告 |
+| EnvironmentError | 操作系统错误的基类 |
+| EOFError | 没有内建输入，达到EOF标记 |
+| Exception | 常规错误的基类 |
+| FloatingPointError | 浮点计算错误 |
+| FutureWarning | 关于构造将来语义会有改变的警告 |
+| GeneratorExit | 生成器发生异常来通知退出 |
+| ImportError | 导入模块/对象失败 |
+
+## with 上下文管理
+
+finally 块由于是否发生异常都会执行，通常放释放资源的代码。
+其实，我们可以通过 with 上下文管理，更方便的实现释放资源的操作。
+with 不是不用来取代 finally，只是作为补充
+
+```python
+with context_expr[as var]:
+    pass
+    
+with open('b.txt', 'r', encoding='utf-8') as f:
+    content = f.readline()
+    print(content)
+```
+
+## traceback 模块
+
+print_exc是简化版的print_exception
+
+```python
+import traceback
+try:
+    print('step1')
+    num = 1/0
+except:
+    traceback.print_ext()
+```
+
+## raise 自定义异常类
+
+自定义异常类一般都是运行时异常，通常继承 exception 或其子类即可。
+命名一般以 Error、Exception 为后缀。
+自定义异常由 raise 语句抛出
+
+```python
+class AgeError(Exception):  # 继承Exception类
+    def __init__(self, errorInfo):
+        Exception.__init__(self)
+        self.errorInfo = errorInfo
+    def __str__(self):
+        return str(self.errorInfo) + '年龄错误！应该在1-150之间'
+
+if __name__ == '__main__':
+    age = int(input('请输入一个年龄：'))
+    if age < 1 or age > 150:
+        raise AgeError()
+    else:
+        print('正常的年龄：', age)
+```
+[if __name__ == '__main__'](http://blog.konghy.cn/2017/04/24/python-entry-program/)
 
 
+# 模块
+
+## import 语句导入
+
+* import 模块名         # 导入一个模块
+* import 模块1，模块2...         # 导入多个模块
+* import 模块名 as 模块别名        # 导入模块并使用新名字
+
+## __import__() 动态导入
+
+import 语句本质上就是调用内置函数__import__()，我们可以通过它实现动态导入。
+给__import__()动态传递不同的参数值，就能导入不同的模块。
+一般不建议自行使用__import__()导入，其行为在 python2 和 python3 中有差异，会导致意外错误。如需动态导入，可以使用 importlib 模块。
+
+```
+s = 'math'
+m = __import__(s)
+print(m.pi)
+```
+
+```
+import importlib
+a = importlib.import_module("math")
+print(a.pi)
+```
+
+## 导入包操作
+
+from package import item 这种语法中，item 可以是包、模块，也可以是函数、类、变量
+import item1.item2  这种语法中，item 必须是包或模块，不能是其他
+
+* import a.aa.module_AA
+在使用时，必须加完整名称来引用。比如：a.aa.module_AA.fun_AA()
+
+* from a.aa import module_AA
+在使用时，直接可以使用模块名。比如：module_AA.fun_AA()
+
+* from a.aa.module_AA import fun_AA   直接导入函数
+在使用时，直接可以使用函数名。比如：fun_AA()
+
+# 基于 tkinter 模块创建 GUI 程序步骤
+
+* 创建应用程序主窗口对象（也称：根窗口）
+```
+from tkinter import *
+root = Tk()
+```
+
+* 在主窗口中，添加各种可视化组件，比如：按钮Button，文本框Label
+```
+btn01 = Button(root)
+btn01["text"] = "按钮"
+```
+
+* 通过几何布局管理器，管理组件的大小和位置
+btn01.pack()
+
+* 事件处理
+通过绑定事件处理程序，响应用户操作所触发的事件
+
+```
+from tkinter import *
+from tkinter import messagebox
+root = Tk()
+root.title("My first GUI")
+root.geometry("500x300+100+200")
+
+btn01 = Button(root)
+btn01["text"] = "按钮"
+
+btn01.pack()
+
+def songhua(e):
+    messagebox.showinfo("Message", "send flower")
+    print("送花结束")
+
+btn01.bind("<Button-1>", songhua)
+
+root.mainloop()
+```
+
+## 主窗口位置和大小
+
+geometry('w*h ± x ± y')
+w 为宽度， h 为高度， +x 表示距屏幕左边的距离， -x 表示距屏幕右边的距离
++y 表示距屏幕上边的距离， -y 表示距屏幕下边的距离
+
+## 常用组件汇总列表
+
+| Tkinter 类 | 名称 | 简介 |
+| :------: | :------: | :------ |
+| Toplevel | 顶层 | 容器类，可用于为其他组件提供单独的容器；Toplevel 有点类似于窗口 |
+| Button | 按钮 | 代表按钮组件 |
+| Canvas | 画布 | 提供绘图功能，包括直线、矩形、椭圆、多边形、位图等 |
+| Checkbutton | 复选框 | 可供用户勾选的复选框 |
+| Entry | 单行输入框 | 用户可输入内容 |
+| Framc | 容器 | 用于装载其它 GUI 组件 |
+| Label | 标签 | 用于显示不可编辑的文本或图标 |
+| LabelFrame | 容器 | 也是容器组件，类似于 Frame，但它支持添加标题 |
+| Listbox | 列表框 | 列出多个选项，供用户选择 |
+| Menu | 菜单 | 菜单组件 |
+| Menubutton | 菜单按钮 | 用来包含菜单的按钮（包括下拉式、层叠式等） |
+| OptionMenu | 菜单按钮 | Menubutton 的子类，也代表菜单按钮，可通过按钮打开一个菜单 |
+| Message | 消息框 | 类似于标签，但可以显示多行文本；后来当 Label 也能显示 |
+
+
+## GUI 程序的经典面向对象写法
+
+```
+from tkinter import *
+
+class Application(Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.master = master
+        self.pack()
+        self.createWidget()
+    def createWidget(self):
+        pass
+
+root = Tk()
+root.geometry("500x300+200+300")
+root.title("一个经典的GUI程序类的测试")
+
+app = Application(master=root)
+
+root.mainloop()
+```
 
 
 
